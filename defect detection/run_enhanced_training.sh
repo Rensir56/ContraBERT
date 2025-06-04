@@ -5,15 +5,17 @@
 
 set -e  # 遇到错误时停止执行
 
+export HF_ENDPOINT=https://hf-mirror.com
+
 # =============================================================================
 # 配置参数
 # =============================================================================
 
 # 基础路径配置
-PRETRAIN_DIR="./saved_models/pretrain_models/"
+PRETRAIN_DIR="../saved_models/pretrain_models/"
 MODEL_TYPE="ContraBERT_C"  # 或 ContraBERT_G
-DATA_DIR="./data/finetune_data/c_vulnerability/devign"
-OUTPUT_BASE="./saved_models/finetune_models/vulnerability_detection_enhanced"
+DATA_DIR="./dataset"
+OUTPUT_BASE="../saved_models/finetune_models/vulnerability_detection_enhanced"
 
 # 创建输出目录
 OUTPUT_DIR="${OUTPUT_BASE}/${MODEL_TYPE}_enhanced_$(date +%Y%m%d_%H%M%S)"
@@ -37,10 +39,10 @@ python vulnerability_detection_enhanced.py \
     --model_type=roberta \
     --tokenizer_name=microsoft/codebert-base \
     --model_name_or_path=${PRETRAIN_DIR}/${MODEL_TYPE} \
-    --num_train_epochs=8 \
+    --num_train_epochs=6 \
     --block_size=512 \
-    --train_batch_size=16 \
-    --eval_batch_size=32 \
+    --train_batch_size=32 \
+    --eval_batch_size=64 \
     --learning_rate=1e-5 \
     --max_grad_norm=1.0 \
     --seed=42 \
@@ -69,15 +71,15 @@ python vulnerability_detection_enhanced.py \
     --model_type=roberta \
     --tokenizer_name=microsoft/codebert-base \
     --model_name_or_path=${PRETRAIN_DIR}/${MODEL_TYPE} \
-    --num_train_epochs=10 \
+    --num_train_epochs=6 \
     --block_size=512 \
-    --train_batch_size=12 \
-    --eval_batch_size=32 \
+    --train_batch_size=32 \
+    --eval_batch_size=64 \
     --learning_rate=8e-6 \
     --max_grad_norm=1.0 \
     --seed=42 \
     --use_data_augmentation \
-    --augmentation_ratio=0.4 \
+    --augmentation_ratio=0.3 \
     --dropout_rate=0.2 \
     --pooling_strategy=attention \
     --use_focal_loss \
@@ -107,10 +109,10 @@ python vulnerability_detection_enhanced.py \
     --model_type=roberta \
     --tokenizer_name=microsoft/codebert-base \
     --model_name_or_path=${PRETRAIN_DIR}/${MODEL_TYPE} \
-    --num_train_epochs=5 \
+    --num_train_epochs=4 \
     --block_size=256 \
-    --train_batch_size=24 \
-    --eval_batch_size=48 \
+    --train_batch_size=48 \
+    --eval_batch_size=96 \
     --learning_rate=2e-5 \
     --max_grad_norm=1.0 \
     --seed=42 \
@@ -144,8 +146,8 @@ for i in {1..3}; do
         --model_name_or_path=${PRETRAIN_DIR}/${MODEL_TYPE} \
         --num_train_epochs=6 \
         --block_size=512 \
-        --train_batch_size=16 \
-        --eval_batch_size=32 \
+        --train_batch_size=32 \
+        --eval_batch_size=64 \
         --learning_rate=${lr} \
         --max_grad_norm=1.0 \
         --seed=${seed} \
