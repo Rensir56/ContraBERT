@@ -275,13 +275,6 @@ defect detection/
 - Gradual Unfreezing for Transfer Learning
 - Curriculum Learning Strategies
 
-### 📞 12. 联系方式
-
-如有问题或建议，欢迎通过以下方式联系：
-- 开Issue讨论技术问题
-- 提交Pull Request贡献代码
-- 邮件联系进行深度合作
-
 ---
 
 ## 🎉 总结
