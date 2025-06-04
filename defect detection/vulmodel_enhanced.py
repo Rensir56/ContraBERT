@@ -156,14 +156,22 @@ class EnhancedVulModel(nn.Module):
     
     def forward(self, input_ids=None, labels=None):
         # 获取基础编码器输出
-        attention_mask = input_ids.ne(self.tokenizer.pad_token_id)
-        encoder_outputs = self.encoder(input_ids, attention_mask=attention_mask)
+        pad_token_id = getattr(self.tokenizer, 'pad_token_id', 1)  # 默认使用1作为pad_token_id
+        attention_mask = input_ids.ne(pad_token_id)
         
-        # 获取隐藏状态
-        if hasattr(encoder_outputs, 'last_hidden_state'):
+        # 正确获取hidden states - 使用encoder.roberta而不是直接使用encoder
+        if hasattr(self.encoder, 'roberta'):
+            encoder_outputs = self.encoder.roberta(input_ids, attention_mask=attention_mask)
             hidden_states = encoder_outputs.last_hidden_state
         else:
-            hidden_states = encoder_outputs[0]
+            # 兼容其他模型架构
+            encoder_outputs = self.encoder(input_ids, attention_mask=attention_mask, output_hidden_states=True)
+            if hasattr(encoder_outputs, 'last_hidden_state'):
+                hidden_states = encoder_outputs.last_hidden_state
+            elif hasattr(encoder_outputs, 'hidden_states'):
+                hidden_states = encoder_outputs.hidden_states[-1]
+            else:
+                hidden_states = encoder_outputs[0]
         
         # 应用层归一化和dropout
         hidden_states = self.layer_norm(hidden_states)
@@ -242,9 +250,22 @@ class VulModelWithContrastive(EnhancedVulModel):
             # 添加对比学习损失
             if self.use_contrastive and self.training:
                 # 获取句子嵌入
-                attention_mask = input_ids.ne(self.tokenizer.pad_token_id)
-                encoder_outputs = self.encoder(input_ids, attention_mask=attention_mask)
-                hidden_states = encoder_outputs.last_hidden_state if hasattr(encoder_outputs, 'last_hidden_state') else encoder_outputs[0]
+                pad_token_id = getattr(self.tokenizer, 'pad_token_id', 1)
+                attention_mask = input_ids.ne(pad_token_id)
+                
+                # 正确获取hidden states
+                if hasattr(self.encoder, 'roberta'):
+                    encoder_outputs = self.encoder.roberta(input_ids, attention_mask=attention_mask)
+                    hidden_states = encoder_outputs.last_hidden_state
+                else:
+                    encoder_outputs = self.encoder(input_ids, attention_mask=attention_mask, output_hidden_states=True)
+                    if hasattr(encoder_outputs, 'last_hidden_state'):
+                        hidden_states = encoder_outputs.last_hidden_state
+                    elif hasattr(encoder_outputs, 'hidden_states'):
+                        hidden_states = encoder_outputs.hidden_states[-1]
+                    else:
+                        hidden_states = encoder_outputs[0]
+                
                 sentence_embeddings = self.pool_hidden_states(hidden_states, attention_mask)
                 
                 # 计算对比损失
