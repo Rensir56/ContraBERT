@@ -33,7 +33,7 @@ python vulnerability_detection_v2.py \
     --model_name_or_path=${Pretrain_dir}/$Model_type \
     --tokenizer_name=microsoft/codebert-base \
     --train_data_file="$DATA_DIR/train.jsonl" \
-    --eval_data_file="$DATA_DIR/val.jsonl" \
+    --eval_data_file="$DATA_DIR/valid.jsonl" \
     --test_data_file="$DATA_DIR/test.jsonl" \
     --epoch=5 \
     --block_size=400 \
@@ -63,7 +63,7 @@ python vulnerability_detection_v2.py \
     --model_name_or_path=${Pretrain_dir}/$Model_type \
     --tokenizer_name=microsoft/codebert-base \
     --train_data_file="$DATA_DIR/train.jsonl" \
-    --eval_data_file="$DATA_DIR/val.jsonl" \
+    --eval_data_file="$DATA_DIR/valid.jsonl" \
     --test_data_file="$DATA_DIR/test.jsonl" \
     --epoch=5 \
     --block_size=400 \
@@ -94,7 +94,7 @@ python vulnerability_detection.py \
     --model_name_or_path=${Pretrain_dir}/$Model_type \
     --tokenizer_name=microsoft/codebert-base \
     --train_data_file="$DATA_DIR/train.jsonl" \
-    --eval_data_file="$DATA_DIR/val.jsonl" \
+    --eval_data_file="$DATA_DIR/valid.jsonl" \
     --test_data_file="$DATA_DIR/test.jsonl" \
     --epoch=5 \
     --block_size=400 \
