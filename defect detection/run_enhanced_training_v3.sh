@@ -20,6 +20,11 @@ timestamp=$(date +%Y%m%d_%H%M%S)
 
 # 创建输出目录
 mkdir -p $OUTPUT_DIR
+mkdir -p $OUTPUT_DIR/conservative
+mkdir -p $OUTPUT_DIR/aggressive
+mkdir -p $OUTPUT_DIR/lightweight
+mkdir -p $OUTPUT_DIR/baseline
+mkdir -p $OUTPUT_DIR/ensemble
 
 echo "📁 输出目录: $OUTPUT_DIR"
 echo "🤖 模型类型: $Model_type"
